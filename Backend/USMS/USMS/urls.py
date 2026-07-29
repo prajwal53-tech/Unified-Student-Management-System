@@ -9,4 +9,8 @@ urlpatterns = [
     path("api/v1/", include("departments.urls")),
 
     path("api/v1/", include("students.urls")),
+
+    path("api/v1/", include("faculty.urls")),
+
+    path("api/v1/", include("attendance.urls")),
 ]
