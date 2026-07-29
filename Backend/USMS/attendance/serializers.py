@@ -76,3 +76,71 @@ class AttendanceSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
+class BulkAttendanceRecordSerializer(serializers.Serializer):
+    student = serializers.IntegerField()
+    status = serializers.ChoiceField(
+        choices=[
+            "Present",
+            "Absent",
+            "Late",
+        ]
+    )
+    remarks = serializers.CharField(
+        required=False,
+        allow_blank=True
+    )
+
+
+class BulkAttendanceSerializer(serializers.Serializer):
+    session = serializers.IntegerField()
+
+    records = BulkAttendanceRecordSerializer(
+        many=True
+    )
+
+class AttendanceHistorySerializer(serializers.ModelSerializer):
+
+    subject = serializers.CharField(
+        source="subject.name",
+        read_only=True
+    )
+
+    faculty = serializers.CharField(
+        source="faculty.user.username",
+        read_only=True
+    )
+
+    semester = serializers.IntegerField(
+        source="semester.number",
+        read_only=True
+    )
+
+    students_marked = serializers.SerializerMethodField()
+
+    class Meta:
+        model = AttendanceSession
+
+        fields = [
+            "id",
+            "subject",
+            "faculty",
+            "semester",
+            "date",
+            "lecture_number",
+            "students_marked",
+        ]
+
+    def get_students_marked(self, obj):
+        return obj.attendance_records.count()
+
+
+class AttendanceEditSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Attendance
+
+        fields = [
+            "status",
+            "remarks",
+        ]
