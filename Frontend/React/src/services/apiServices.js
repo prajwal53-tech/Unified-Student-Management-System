@@ -87,7 +87,7 @@ export const createNotice = async (data) => (await api.post("notices/", data)).d
 export const updateNotice = async (id, data) => (await api.put(`notices/${id}/`, data)).data;
 export const deleteNotice = async (id) => (await api.delete(`notices/${id}/`)).data;
 
-// Timetable & Classrooms API
+// Timetable, Classrooms & Proxy Lectures API
 export const getClassrooms = async () => (await api.get("classrooms/")).data;
 export const createClassroom = async (data) => (await api.post("classrooms/", data)).data;
 export const updateClassroom = async (id, data) => (await api.put(`classrooms/${id}/`, data)).data;
@@ -98,6 +98,12 @@ export const getTimetable = getTimetables;
 export const createTimetable = async (data) => (await api.post("timetable/", data)).data;
 export const updateTimetable = async (id, data) => (await api.put(`timetable/${id}/`, data)).data;
 export const deleteTimetable = async (id) => (await api.delete(`timetable/${id}/`)).data;
+
+export const getProxyLectures = async (params) => (await api.get("proxy-lectures/", { params })).data;
+export const getMyProxyLectures = async () => (await api.get("proxy-lectures/me/")).data;
+export const createProxyLecture = async (data) => (await api.post("proxy-lectures/me/", data)).data;
+export const updateProxyLecture = async (id, data) => (await api.put(`proxy-lectures/${id}/`, data)).data;
+export const deleteProxyLecture = async (id) => (await api.delete(`proxy-lectures/${id}/`)).data;
 
 // Student Information Form (SIF) API
 export const getSIFList = async (params) => (await api.get("sif/", { params })).data;

@@ -1,17 +1,14 @@
 from rest_framework import serializers
-
-from .models import Classroom, Timetable
+from .models import Classroom, Timetable, ProxyLecture
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Classroom
         fields = "__all__"
 
 
 class TimetableSerializer(serializers.ModelSerializer):
-
     subject_name = serializers.CharField(
         source="subject.name",
         read_only=True
@@ -32,7 +29,6 @@ class TimetableSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def validate(self, data):
-
         start = data["start_time"]
         end = data["end_time"]
 
@@ -42,3 +38,14 @@ class TimetableSerializer(serializers.ModelSerializer):
             )
 
         return data
+
+
+class ProxyLectureSerializer(serializers.ModelSerializer):
+    original_faculty_name = serializers.CharField(source="original_faculty.user.username", read_only=True)
+    proxy_faculty_name = serializers.CharField(source="proxy_faculty.user.username", read_only=True)
+    subject_name = serializers.CharField(source="subject.name", read_only=True)
+    room_number = serializers.CharField(source="classroom.room_number", read_only=True)
+
+    class Meta:
+        model = ProxyLecture
+        fields = "__all__"

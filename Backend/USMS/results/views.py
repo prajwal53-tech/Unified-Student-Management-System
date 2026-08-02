@@ -49,7 +49,7 @@ class ExamSessionViewSet(viewsets.ModelViewSet):
 
 
 class ResultViewSet(viewsets.ModelViewSet):
-    queryset = Result.objects.all()
+    queryset = Result.objects.select_related("student__user", "faculty__user", "subject", "semester", "exam_type").all()
     serializer_class = ResultSerializer
     permission_classes = [IsAuthenticated]
 
@@ -75,6 +75,13 @@ class ResultViewSet(viewsets.ModelViewSet):
         "-created_at"
     ]
 
+    def perform_create(self, serializer):
+        faculty_profile = getattr(self.request.user, "faculty_profile", None)
+        if faculty_profile and not serializer.validated_data.get("faculty"):
+            serializer.save(faculty=faculty_profile)
+        else:
+            serializer.save()
+
     @action(
         detail=True,
         methods=["get"],
@@ -93,10 +100,21 @@ class ResultViewSet(viewsets.ModelViewSet):
         student_id = request.query_params.get("student")
         semester_id = request.query_params.get("semester")
 
-        student = StudentProfile.objects.get(id=student_id)
-        semester = Semester.objects.get(id=semester_id)
+        if not student_id and hasattr(request.user, "student_profile"):
+            student_id = request.user.student_profile.id
 
-        return Response(GPACalculator.calculate(student, semester))
+        if not student_id or not semester_id:
+            return Response(
+                {"error": "student and semester query parameters are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            student = StudentProfile.objects.get(id=student_id)
+            semester = Semester.objects.get(id=semester_id)
+            return Response(GPACalculator.calculate(student, semester))
+        except (StudentProfile.DoesNotExist, Semester.DoesNotExist):
+            return Response({"error": "Student or Semester record not found."}, status=status.HTTP_404_NOT_FOUND)
 
     @action(
         detail=False,
@@ -107,17 +125,22 @@ class ResultViewSet(viewsets.ModelViewSet):
         student_id = request.query_params.get("student")
         semester_id = request.query_params.get("semester")
 
+        if not student_id and hasattr(request.user, "student_profile"):
+            student_id = request.user.student_profile.id
+
         if not student_id or not semester_id:
             return Response(
-                {"error": "student and semester are required."},
+                {"error": "student and semester query parameters are required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        student = StudentProfile.objects.get(id=student_id)
-        semester = Semester.objects.get(id=semester_id)
-
-        summary = SemesterSummaryService.get_summary(student, semester)
-        return Response(summary)
+        try:
+            student = StudentProfile.objects.get(id=student_id)
+            semester = Semester.objects.get(id=semester_id)
+            summary = SemesterSummaryService.get_summary(student, semester)
+            return Response(summary)
+        except (StudentProfile.DoesNotExist, Semester.DoesNotExist):
+            return Response({"error": "Student or Semester record not found."}, status=status.HTTP_404_NOT_FOUND)
 
     @action(
         detail=False,
@@ -127,15 +150,20 @@ class ResultViewSet(viewsets.ModelViewSet):
     def cgpa(self, request):
         student_id = request.query_params.get("student")
 
+        if not student_id and hasattr(request.user, "student_profile"):
+            student_id = request.user.student_profile.id
+
         if not student_id:
             return Response(
-                {"error": "student is required"},
+                {"error": "student parameter is required"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        student = StudentProfile.objects.get(id=student_id)
-
-        return Response(CGPACalculator.calculate(student))
+        try:
+            student = StudentProfile.objects.get(id=student_id)
+            return Response(CGPACalculator.calculate(student))
+        except StudentProfile.DoesNotExist:
+            return Response({"error": "Student record not found."}, status=status.HTTP_404_NOT_FOUND)
 
     @action(
         detail=False,
@@ -151,9 +179,11 @@ class ResultViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        semester = Semester.objects.get(id=semester_id)
-
-        return Response(RankListService.get_rank_list(semester))
+        try:
+            semester = Semester.objects.get(id=semester_id)
+            return Response(RankListService.get_rank_list(semester))
+        except Semester.DoesNotExist:
+            return Response({"error": "Semester record not found."}, status=status.HTTP_404_NOT_FOUND)
 
     @action(
         detail=False,
@@ -163,15 +193,20 @@ class ResultViewSet(viewsets.ModelViewSet):
     def transcript(self, request):
         student_id = request.query_params.get("student")
 
+        if not student_id and hasattr(request.user, "student_profile"):
+            student_id = request.user.student_profile.id
+
         if not student_id:
             return Response(
-                {"error": "student is required"},
+                {"error": "student parameter is required"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        student = StudentProfile.objects.get(id=student_id)
-
-        return Response(TranscriptService.generate(student))
+        try:
+            student = StudentProfile.objects.get(id=student_id)
+            return Response(TranscriptService.generate(student))
+        except StudentProfile.DoesNotExist:
+            return Response({"error": "Student record not found."}, status=status.HTTP_404_NOT_FOUND)
 
     @action(
         detail=False,
@@ -181,18 +216,24 @@ class ResultViewSet(viewsets.ModelViewSet):
     def transcript_pdf(self, request):
         student_id = request.query_params.get("student")
 
+        if not student_id and hasattr(request.user, "student_profile"):
+            student_id = request.user.student_profile.id
+
         if not student_id:
             return Response(
-                {"error": "student is required"},
+                {"error": "student parameter is required"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        student = StudentProfile.objects.get(id=student_id)
-        transcript = TranscriptService.generate(student)
-        pdf = TranscriptPDF.generate(transcript)
+        try:
+            student = StudentProfile.objects.get(id=student_id)
+            transcript = TranscriptService.generate(student)
+            pdf = TranscriptPDF.generate(transcript)
 
-        return FileResponse(
-            open(pdf, "rb"),
-            as_attachment=True,
-            filename=pdf
-        )
+            return FileResponse(
+                open(pdf, "rb"),
+                as_attachment=True,
+                filename=pdf
+            )
+        except StudentProfile.DoesNotExist:
+            return Response({"error": "Student record not found."}, status=status.HTTP_404_NOT_FOUND)
