@@ -5,6 +5,7 @@ from django.db.models import Sum
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from core.permissions import IsAdmin
 
 from .models import (
     FeeStructure,
@@ -99,3 +100,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
             },
             status=status.HTTP_201_CREATED
         )
+
+    permission_classes = [
+        IsAdmin
+]

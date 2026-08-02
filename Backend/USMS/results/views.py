@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
+from core.permissions import IsAdminOrFaculty
 from students.models import StudentProfile
 from departments.models import Semester
 from .services import GPACalculator
@@ -219,3 +220,6 @@ class ResultViewSet(viewsets.ModelViewSet):
             as_attachment=True,
             filename=pdf
         )
+    permission_classes = [
+        IsAdminOrFaculty
+]

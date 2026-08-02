@@ -1,4 +1,5 @@
 import csv
+from core.permissions import IsAdminOrFaculty
 from django.http import HttpResponse
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -9,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
 from django.db.models import Count
+from core.permissions import IsAdminOrFaculty
 from students.models import StudentProfile
 from .models import Attendance, AttendanceSession
 from django.utils import timezone
@@ -665,3 +667,23 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         doc.build(elements)
 
         return response
+    permission_classes = [
+        IsAdminOrFaculty
+        ]   
+
+    @action(detail=False)
+
+    def my_attendance(self, request):
+
+            student = request.user.studentprofile
+
+            attendance = Attendance.objects.filter(
+                student=student
+            )
+
+            serializer = self.get_serializer(
+                attendance,
+                many=True
+            )
+
+            return Response(serializer.data)

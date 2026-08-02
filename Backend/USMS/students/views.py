@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-
+from core.permissions import IsAdminOrReadOnly
 from .models import StudentProfile
 from .serializers import StudentProfileSerializer
 
@@ -37,3 +37,7 @@ class StudentProfileViewSet(viewsets.ModelViewSet):
     ]
 
     ordering = ["roll_number"]
+
+    permission_classes = [
+        IsAdminOrReadOnly
+    ]

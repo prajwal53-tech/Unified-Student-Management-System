@@ -1,0 +1,13 @@
+from rest_framework import viewsets
+from core.permissions import IsAdminFacultyOrReadOnly
+from .models import Notice
+from .serializers import NoticeSerializer
+
+
+class NoticeViewSet(viewsets.ModelViewSet):
+
+    queryset = Notice.objects.all()
+
+    serializer_class = NoticeSerializer
+
+    permission_classes = [IsAdminFacultyOrReadOnly]
