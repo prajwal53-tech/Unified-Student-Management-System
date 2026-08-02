@@ -15,40 +15,41 @@ function Students() {
   }, []);
 
   const loadStudents = async () => {
+    setLoading(true);
     try {
       const data = await getStudents();
-      setStudents(data.results || data);
+      const list = data.results || data || [];
+      setStudents(list);
     } catch (error) {
-      console.error(error);
+      console.error("Error loading students:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredStudents = students.filter((student) =>
-    student.username?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredStudents = students.filter((student) => {
+    const q = search.toLowerCase();
+    const uname = (student.username || student.user_name || student.user?.username || "").toLowerCase();
+    const roll = (student.roll_number || "").toLowerCase();
+    const enr = (student.enrollment_number || "").toLowerCase();
+    const dept = (student.department_name || "").toLowerCase();
+    return uname.includes(q) || roll.includes(q) || enr.includes(q) || dept.includes(q);
+  });
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-
         <StudentToolbar
-    search={search}
-    setSearch={setSearch}
-    refreshStudents={loadStudents}
-/>
+          search={search}
+          setSearch={setSearch}
+          refreshStudents={loadStudents}
+        />
 
         <StudentTable
-
-    students={filteredStudents}
-
-    loading={loading}
-
-    refreshStudents={loadStudents}
-
-/>
-
+          students={filteredStudents}
+          loading={loading}
+          refreshStudents={loadStudents}
+        />
       </div>
     </AdminLayout>
   );

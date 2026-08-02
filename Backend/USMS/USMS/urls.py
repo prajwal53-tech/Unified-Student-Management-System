@@ -3,12 +3,9 @@ from django.urls import path, include
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
-)
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularSwaggerView,
     SpectacularRedocView,
 )
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/auth/", include("accounts.urls")),
@@ -20,35 +17,7 @@ urlpatterns = [
     path("api/v1/", include("fees.urls")),
     path("api/v1/", include("timetable.urls")),
     path("api/v1/", include("notice.urls")),
-    path("api/v1/",include("academics.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path(
-        "swagger/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger-ui",
-    ),
-]
-
-urlpatterns += [
-    path(
-        "api/schema/",
-        SpectacularAPIView.as_view(),
-        name="schema",
-    ),
-
-    path(
-        "swagger/",
-        SpectacularSwaggerView.as_view(
-            url_name="schema"
-        ),
-        name="swagger-ui",
-    ),
-
-    path(
-        "redoc/",
-        SpectacularRedocView.as_view(
-            url_name="schema"
-        ),
-        name="redoc",
-    ),
+    path("swagger/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]

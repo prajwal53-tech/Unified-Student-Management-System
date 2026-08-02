@@ -1,40 +1,75 @@
-import { createContext, useContext, useState } from "react";
-import { login as loginService, logout as logoutService } from "../services/auth";
+import { createContext, useContext, useState, useEffect } from "react";
+import { login as loginService, logout as logoutService, getMe } from "../services/auth";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-
-    const [user, setUser] = useState({
-        username: localStorage.getItem("username"),
-        role: localStorage.getItem("role"),
-        email: localStorage.getItem("email"),
+    const [user, setUser] = useState(() => {
+        const token = localStorage.getItem("access");
+        if (!token) return null;
+        return {
+            username: localStorage.getItem("username") || "Admin",
+            role: localStorage.getItem("role") || "admin",
+            email: localStorage.getItem("email") || "",
+        };
     });
-const login = async (credentials) => {
-  const data = await loginService(credentials);
 
-  setUser({
-    username: data.username,
-    role: data.role,
-    email: data.email,
-  });
+    const [loading, setLoading] = useState(false);
 
-  return data;
-};
+    useEffect(() => {
+        const token = localStorage.getItem("access");
+        if (token && !user?.username) {
+            getMe()
+                .then((data) => {
+                    setUser({
+                        username: data.username,
+                        role: data.role,
+                        email: data.email,
+                        firstName: data.first_name,
+                        lastName: data.last_name,
+                        phone: data.phone,
+                    });
+                })
+                .catch(() => {
+                    logoutService();
+                    setUser(null);
+                });
+        }
+    }, []);
+
+    const login = async (credentials) => {
+        setLoading(true);
+        try {
+            const data = await loginService(credentials);
+            const userObj = {
+                username: data.username,
+                role: data.role || "admin",
+                email: data.email || "",
+            };
+            setUser(userObj);
+            return data;
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const logout = () => {
-
         logoutService();
-
         setUser(null);
+    };
+
+    const updateUserState = (updatedData) => {
+        setUser((prev) => ({ ...prev, ...updatedData }));
     };
 
     return (
         <AuthContext.Provider
             value={{
                 user,
+                loading,
                 login,
                 logout,
+                updateUserState,
             }}
         >
             {children}
