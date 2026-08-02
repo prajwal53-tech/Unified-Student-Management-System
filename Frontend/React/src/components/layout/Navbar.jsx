@@ -37,7 +37,7 @@ function Navbar() {
       case "/settings":
         return "System Settings";
       default:
-        return "University ERP System";
+        return "Unified Student Management System";
     }
   };
 

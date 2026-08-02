@@ -78,7 +78,7 @@ function Login() {
                 <GraduationCap size={32} />
               </div>
               <div>
-                <h1 className="text-2xl font-black tracking-tight text-white">USMS ERP</h1>
+                <h1 className="text-2xl font-black tracking-tight text-white">USMS</h1>
                 <p className="text-xs text-blue-300 font-medium">Unified Student Management System</p>
               </div>
             </div>
@@ -88,7 +88,7 @@ function Login() {
                 Empowering Next-Gen University Operations
               </h2>
               <p className="text-sm text-slate-300 leading-relaxed">
-                Centralized ERP portal for real-time attendance tracking, examination marksheets, online fee ledgers, and academic schedules.
+                Centralized university platform for real-time attendance tracking, examination marksheets, online fee ledgers, and academic schedules.
               </p>
             </div>
 
@@ -146,7 +146,7 @@ function Login() {
           <div className="max-w-md w-full mx-auto space-y-6">
             <div>
               <h3 className="text-2xl font-bold text-white tracking-tight">Account Sign In</h3>
-              <p className="text-sm text-slate-400 mt-1">Please enter your credentials to access your ERP portal</p>
+              <p className="text-sm text-slate-400 mt-1">Please enter your credentials to access your university portal</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -208,7 +208,7 @@ function Login() {
 
             <div className="text-center pt-4 border-t border-slate-800/80">
               <p className="text-xs text-slate-500">
-                USMS University ERP System &bull; Secure Encrypted JWT Session
+                Unified Student Management System (USMS) &bull; Secure Encrypted JWT Session
               </p>
             </div>
           </div>

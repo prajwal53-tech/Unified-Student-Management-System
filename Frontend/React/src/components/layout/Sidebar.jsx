@@ -37,7 +37,7 @@ function Sidebar() {
     { name: "Faculty", path: "/admin/faculty", icon: GraduationCap, roles: ["admin"] },
     { name: "Attendance", path: "/admin/attendance", icon: CalendarCheck, roles: ["admin", "faculty", "student"] },
     { name: "Results", path: "/admin/results", icon: FileText, roles: ["admin", "faculty", "student"] },
-    { name: "Fees", path: "/admin/fees", icon: IndianRupee, roles: ["admin", "student"] },
+    { name: role === "student" ? "My Fees" : "Student Fees Audit", path: "/admin/fees", icon: IndianRupee, roles: ["admin", "faculty", "student"] },
     { name: "Timetable", path: "/admin/timetable", icon: Calendar, roles: ["admin", "faculty", "student"] },
     { name: "Notices", path: "/admin/notices", icon: Bell, roles: ["admin", "faculty", "student"] },
     { name: "Departments", path: "/admin/departments", icon: Building2, roles: ["admin"] },
@@ -55,7 +55,7 @@ function Sidebar() {
       <div className="p-6 border-b border-slate-800 flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-            USMS ERP
+            USMS Portal
           </h2>
           <p className="text-xs text-slate-400">University Management</p>
         </div>

@@ -12,7 +12,7 @@ function Settings() {
 
   const handleSave = (e) => {
     e.preventDefault();
-    alert("ERP System Settings updated successfully!");
+    alert("System Settings updated successfully!");
   };
 
   return (
@@ -22,7 +22,7 @@ function Settings() {
           <div>
             <div className="flex items-center gap-2">
               <SettingsIcon className="text-blue-600" size={28} />
-              <h1 className="text-2xl font-bold text-slate-800">ERP System Settings</h1>
+              <h1 className="text-2xl font-bold text-slate-800">System Settings</h1>
             </div>
             <p className="text-sm text-slate-500 mt-1">Configure global university parameters, database, and authentication</p>
           </div>
@@ -32,7 +32,7 @@ function Settings() {
         <form onSubmit={handleSave} className="space-y-6">
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
             <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2 border-b pb-3">
-              <Server size={18} className="text-blue-600" /> General ERP Configuration
+              <Server size={18} className="text-blue-600" /> General Configuration
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -81,7 +81,7 @@ function Settings() {
 
           <div className="flex justify-end">
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-8">
-              Save ERP Configurations
+              Save Configurations
             </Button>
           </div>
         </form>

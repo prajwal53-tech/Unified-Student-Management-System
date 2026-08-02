@@ -70,7 +70,7 @@ export const getPayments = async (params) => (await api.get("payments/", { param
 export const createPayment = async (data) => (await api.post("payments/", data)).data;
 export const getFeeDashboard = async () => (await api.get("student-fees/dashboard/")).data;
 
-// Results API
+// Results & SPI / CGPA API
 export const getExamTypes = async () => (await api.get("exam-types/")).data;
 export const createExamType = async (data) => (await api.post("exam-types/", data)).data;
 export const updateExamType = async (id, data) => (await api.put(`exam-types/${id}/`, data)).data;
@@ -80,6 +80,7 @@ export const getResults = async (params) => (await api.get("results/", { params 
 export const createResult = async (data) => (await api.post("results/", data)).data;
 export const updateResult = async (id, data) => (await api.put(`results/${id}/`, data)).data;
 export const deleteResult = async (id) => (await api.delete(`results/${id}/`)).data;
+export const getPerformanceBreakdown = async (studentId) => (await api.get("results/performance-breakdown/", { params: { student: studentId } })).data;
 
 // Notices API
 export const getNotices = async (params) => (await api.get("notices/", { params })).data;

@@ -180,7 +180,7 @@ function Attendance() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Top Header & Role Switcher */}
+        {/* Fixed Title Header */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <div className="flex items-center gap-2">
@@ -189,7 +189,7 @@ function Attendance() {
                 {isStudent
                   ? "My Attendance Record"
                   : isAdmin && viewMode === "faculty"
-                  ? "Faculty Attendance & Workload Status"
+                  ? "Faculty Attendance & Workload Log"
                   : "Student Attendance Management"}
               </h1>
             </div>
@@ -202,62 +202,64 @@ function Attendance() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            {isAdmin && (
-              <div className="flex bg-slate-100 p-1 rounded-lg border">
-                <button
-                  onClick={() => setViewMode("students")}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition flex items-center gap-1.5 ${
-                    viewMode === "students"
-                      ? "bg-white text-blue-600 shadow-sm"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  <UserCheck size={14} /> Student Attendance
-                </button>
-                <button
-                  onClick={() => setViewMode("faculty")}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-md transition flex items-center gap-1.5 ${
-                    viewMode === "faculty"
-                      ? "bg-white text-purple-600 shadow-sm"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  <GraduationCap size={14} /> Faculty Attendance
-                </button>
-              </div>
-            )}
-
-            {!isStudent && viewMode === "students" && (
-              <div className="flex bg-slate-100 p-1 rounded-lg">
-                <button
-                  onClick={() => setActiveTab("take")}
-                  className={`px-4 py-2 text-xs font-bold rounded-md transition ${
-                    activeTab === "take" ? "bg-white text-blue-600 shadow-sm" : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  Take Attendance
-                </button>
-                <button
-                  onClick={() => setActiveTab("history")}
-                  className={`px-4 py-2 text-xs font-bold rounded-md transition ${
-                    activeTab === "history" ? "bg-white text-blue-600 shadow-sm" : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  Attendance Log
-                </button>
-                <button
-                  onClick={() => setActiveTab("defaulters")}
-                  className={`px-4 py-2 text-xs font-bold rounded-md transition flex items-center gap-1.5 ${
-                    activeTab === "defaulters" ? "bg-white text-amber-600 shadow-sm" : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  <AlertTriangle size={14} /> Defaulters (&lt;75%)
-                </button>
-              </div>
-            )}
-          </div>
+          {/* Admin Category Switcher - Fixed Position */}
+          {isAdmin && (
+            <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0">
+              <button
+                type="button"
+                onClick={() => setViewMode("students")}
+                className={`px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${
+                  viewMode === "students"
+                    ? "bg-white text-blue-600 shadow-sm border border-slate-200/60"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <UserCheck size={15} /> Student Attendance
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("faculty")}
+                className={`px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${
+                  viewMode === "faculty"
+                    ? "bg-white text-purple-600 shadow-sm border border-slate-200/60"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <GraduationCap size={15} /> Faculty Attendance
+              </button>
+            </div>
+          )}
         </div>
+
+        {/* Sub-Navigation Toolbar - Stable Layout */}
+        {!isStudent && viewMode === "students" && (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-2 flex items-center gap-2 overflow-x-auto">
+            <button
+              onClick={() => setActiveTab("take")}
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-1.5 ${
+                activeTab === "take" ? "bg-blue-600 text-white shadow-md shadow-blue-600/20" : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              <UserCheck size={14} /> Take Attendance
+            </button>
+            <button
+              onClick={() => setActiveTab("history")}
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-1.5 ${
+                activeTab === "history" ? "bg-blue-600 text-white shadow-md shadow-blue-600/20" : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              <Clock size={14} /> Attendance Log
+            </button>
+            <button
+              onClick={() => setActiveTab("defaulters")}
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-1.5 ${
+                activeTab === "defaulters" ? "bg-amber-600 text-white shadow-md shadow-amber-600/20" : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              <AlertTriangle size={14} /> Defaulters List (&lt; 75%)
+            </button>
+          </div>
+        )}
 
         {/* ADMIN FACULTY ATTENDANCE VIEW */}
         {isAdmin && viewMode === "faculty" ? (

@@ -26,7 +26,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/login" element={<Login />} />
 
-        {/* Admin & Core ERP Routes */}
+        {/* Admin & Core USMS Routes */}
         <Route
           path="/admin"
           element={
@@ -86,7 +86,7 @@ function AppRoutes() {
         <Route
           path="/admin/fees"
           element={
-            <ProtectedRoute allowedRoles={["admin", "student"]}>
+            <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
               <Fees />
             </ProtectedRoute>
           }
