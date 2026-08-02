@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "timetable",
     "notice",
     "drf_spectacular",
+    'academics',
     
 ]
 
